@@ -1,5 +1,7 @@
 .PHONY: info
 
+APP_NAME = liftoff
+
 #################################################
 # Detect OS
 ##
@@ -26,9 +28,9 @@ ifeq ($(detected_OS),Linux)
 	PDFVIEWER = xdg-open
 endif
 
-###########################################################################
-# COMMANDS                                                                #
-###########################################################################
+#################################################
+# COMMANDS
+##
 info: ## Information about the environment
 	@echo "Environment Informations"
 	@echo "  * Detected OS: $(detected_OS)"
@@ -36,21 +38,21 @@ info: ## Information about the environment
 	@echo "  * Rust Enviroment: "
 	@echo "$(RUST_ENV)"
 
-run: ## run the application
-	cargo run
+run: ## build and run the debug application
+	@cargo run
 
 build-debug: ## build debug version
-	cargo build
+	@cargo build
 
 build-release: ## build release version
-	cargo-build --release
+	@cargo build --release
+	@mkdir -p bin && cp target/release/$(APP_NAME) bin/
 
-run-build: ## run builded version
-
-
-
+run-release: ## run builded version
+	@make build-release
+	@bin/$(APP_NAME)
 clean: ## clean project
-	cargo clean
+	@cargo clean
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; \
