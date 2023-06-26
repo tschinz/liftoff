@@ -18,7 +18,7 @@ pub fn time_string_human(time: StdDuration, neg: Option<bool>) -> String {
       },
     None => output += "\r",
   }
-  format!("{}{}                                 ", output, humantime)
+  format!("{}{}", output, humantime)
 }
 
 pub fn time_string(time: StdDuration, neg: Option<bool>, print_millis: bool) -> String {
@@ -55,13 +55,13 @@ pub fn time_string(time: StdDuration, neg: Option<bool>, print_millis: bool) -> 
     }
   } else {
     if size >= 5 {
-      output = format!("{}d{:02}", output, days);
+      output = format!("{}{}d", output, days);
     }
     if size >= 4 {
-      output = format!("{}{:02}", output, hours);
+      output = format!("{}{:02}h", output, hours);
     }
     if size >= 3 {
-      output = format!("{}{:02}", output, mins);
+      output = format!("{}{:02}m", output, mins);
     }
     if size >= 2 {
       if secs <= 9 {

@@ -19,6 +19,22 @@ struct Liftoff {
   negative: bool,
 }
 
+impl Liftoff{
+  fn new(cc: &eframe::CreationContext<'_>) -> Self {
+    ui::setup_font(&cc.egui_ctx);
+    Self {
+      duration: StdDuration::new(5, 0),
+      input: String::from("5s"),
+      start_time: SystemTime::now(),
+      end_time: SystemTime::now(),
+      millis: false,
+      human_readable: false,
+      running: false,
+      negative: false,
+    }
+  }
+}
+
 impl Default for Liftoff {
   fn default() -> Self {
     Self {
@@ -38,6 +54,7 @@ impl eframe::App for Liftoff {
   fn clear_color(&self, _visuals: &egui::Visuals) -> [f32; 4] {
         egui::Rgba::TRANSPARENT.to_array() // Make sure we don't paint anything behind the rounded corners
   }
+
 
   fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
     ui::window_frame(ctx, frame, "Liftoff", |ui| {
@@ -107,15 +124,16 @@ fn main() {
     decorated: false,
     transparent: true,
     icon_data: Some(ui::load_icon()),
-    min_window_size: Some(egui::vec2(200.0, 100.0)),
-    initial_window_size: Some(egui::vec2(200.0, 100.0)),
+    min_window_size: Some(egui::vec2(300.0, 150.0)),
+    initial_window_size: Some(egui::vec2(300.0, 150.0)),
     ..Default::default()
   };
 
   eframe::run_native(
     "Liftoff",
     options,
-    Box::new(|_cc| Box::new(Liftoff::default())),
+    //Box::new(|cc| Box::new(Liftoff::default(cc))),
+    Box::new(|cc| Box::new(Liftoff::new(cc))),
   ).unwrap();
 
 }

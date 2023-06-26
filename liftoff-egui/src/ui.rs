@@ -1,6 +1,22 @@
 
 use eframe::egui;
 
+pub fn setup_font(ctx: &egui::Context) {
+  let mut style = (*ctx.style()).clone();
+  style.text_styles = [
+    (egui::TextStyle::Heading, egui::FontId::new(30.0, egui::FontFamily::Proportional)),
+    //(egui::TextStyle::Body, egui::FontId::new(18.0, egui::FontFamily::Proportional)),
+    //(egui::TextStyle::Monospace, egui::FontId::new(14.0, egui::FontFamily::Proportional)),
+    //(egui::TextStyle::Button, egui::FontId::new(14.0, egui::FontFamily::Proportional)),
+    //(egui::TextStyle::Small, egui::FontId::new(10.0, egui::FontFamily::Proportional)),
+    (egui::TextStyle::Body, egui::FontId::new(12.0, egui::FontFamily::Proportional)),
+    (egui::TextStyle::Monospace, egui::FontId::new(12.0, egui::FontFamily::Proportional)),
+    (egui::TextStyle::Button, egui::FontId::new(12.0, egui::FontFamily::Proportional)),
+    (egui::TextStyle::Small, egui::FontId::new(9.0, egui::FontFamily::Proportional)),
+  ]
+  .into();
+  ctx.set_style(style);
+  }
 
 pub(crate) fn load_icon() -> eframe::IconData {
   let (icon_rgba, icon_width, icon_height) = {
@@ -114,8 +130,8 @@ pub fn window_buttons(ui: &mut egui::Ui, frame: &mut eframe::Frame, close: bool,
 
   if close {
     let close_response = ui
-      .add(Button::new(RichText::new("❌").size(button_height)))
-      .on_hover_text("Close the window");
+      .add(Button::new(RichText::new("❌").size(button_height)));
+      //.on_hover_text("Close the window");
     if close_response.clicked() {
       frame.close();
     }
@@ -124,15 +140,15 @@ pub fn window_buttons(ui: &mut egui::Ui, frame: &mut eframe::Frame, close: bool,
   if maximize {
     if frame.info().window_info.maximized {
       let maximized_response = ui
-        .add(Button::new(RichText::new("🗗").size(button_height)))
-        .on_hover_text("Restore window");
+        .add(Button::new(RichText::new("🗗").size(button_height)));
+        //.on_hover_text("Restore window");
       if maximized_response.clicked() {
         frame.set_maximized(false);
       }
     } else {
       let maximized_response = ui
-        .add(Button::new(RichText::new("🗗").size(button_height)))
-        .on_hover_text("Maximize window");
+        .add(Button::new(RichText::new("🗗").size(button_height)));
+        //.on_hover_text("Maximize window");
       if maximized_response.clicked() {
         frame.set_maximized(true);
       }
@@ -141,8 +157,8 @@ pub fn window_buttons(ui: &mut egui::Ui, frame: &mut eframe::Frame, close: bool,
 
   if minimize {
     let minimized_response = ui
-      .add(Button::new(RichText::new("_").size(button_height)))
-      .on_hover_text("Minimize the window");
+      .add(Button::new(RichText::new("_").size(button_height)));
+      //.on_hover_text("Minimize the window");
     if minimized_response.clicked() {
       frame.set_minimized(true);
     }
