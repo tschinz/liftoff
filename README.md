@@ -26,10 +26,21 @@ It allows to enter the countdown duration in a natural manner. After the countdo
 [(Back to top)](#table-of-contents)
 
 ```bash
+cargo build --release --package liftoff-terminal
+
+make help
+make build-release
+make run-terminal
+make run-egui
+make run-ratatui
+
+cd liftoff-terminal
 make help
 make run
 make build-debug
 make build-release
+
+
 ```
 
 ## Credits

@@ -1,7 +1,5 @@
 .PHONY: info
 
-APP_NAME = liftoff
-
 #################################################
 # Detect OS
 ##
@@ -38,21 +36,22 @@ info: ## Information about the environment
 	@echo "  * Rust Enviroment: "
 	@echo "$(RUST_ENV)"
 
-run: ## build and run the debug application
-	@cargo run
+run-egui: ## build and run the liftoff-egui debug application
+	@cargo run --package liftoff-egui
 
-build-debug: ## build debug version
-	@cargo build
+run-terminal: ## build and run the liftoff-terminal debug application
+	@cargo run --package liftoff-terminal
 
-build-release: ## build release version
-	@cargo build --release
-	@mkdir -p bin && cp target/release/$(APP_NAME) bin/
+run-ratatui: ## build and run the liftoff-ratatui debug application
+	@cargo run --package liftoff-ratatui
 
-run-release: ## run builded version
-	@make build-release
-	@bin/$(APP_NAME)
-clean: ## clean project
-	@cargo clean
+build-release: ## build release versions of all applications
+	@cargo build --release --package liftoff-egui
+	@cargo build --release --package liftoff-terminal
+	@cargo build --release --package liftoff-ratatui
+	@mkdir -p bin && cp target/release/liftoff-egui bin/
+	@mkdir -p bin && cp target/release/liftoff-terminal bin/
+	@mkdir -p bin && cp target/release/liftoff-ratatui bin/
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; \

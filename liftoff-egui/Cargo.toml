@@ -1,0 +1,13 @@
+[package]
+name = "liftoff-egui"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+chrono = "0.4"
+chrono-humanize = "0.2.2"
+eframe = "0.22.0"
+humantime = "2.1.0"
+image = "0.24.2"
