@@ -117,13 +117,24 @@ pub fn title_bar_ui(
       ui.spacing_mut().item_spacing.x = 0.0;
       ui.visuals_mut().button_frame = false;
       ui.add_space(8.0);
-      window_buttons(ui, frame, true, false, true, true);
+      use egui::special_emojis::{GITHUB};
+
+      let link = TBLink {
+        display: true,
+        label: String::from(format!("{}", GITHUB)),
+        link: String::from("https://github.com/tschinz/liftoff"),
+      };
+      window_buttons(ui, frame, true, false, true, true, link);
     });
   });
 }
-
+pub struct TBLink {
+  display: bool,
+  label: String,
+  link: String,
+}
 /// Show some close/maximize/minimize buttons for the native window.
-pub fn window_buttons(ui: &mut egui::Ui, frame: &mut eframe::Frame, close: bool, maximize: bool, minimize:bool, theme:bool) {
+pub fn window_buttons(ui: &mut egui::Ui, frame: &mut eframe::Frame, close: bool, maximize: bool, minimize:bool, theme:bool, link: TBLink) {
   use egui::{Button, RichText};
 
   let button_height = 12.0;
@@ -167,4 +178,11 @@ pub fn window_buttons(ui: &mut egui::Ui, frame: &mut eframe::Frame, close: bool,
   if theme {
     egui::widgets::global_dark_light_mode_switch(ui);
   }
+  if link.display {
+    ui.hyperlink_to(
+      link.label,
+      link.link,
+    ).on_hover_text("");
+  }
+
 }

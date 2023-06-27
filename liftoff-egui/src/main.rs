@@ -8,6 +8,7 @@ use eframe::egui;
 mod ui;
 mod logic;
 
+// App state
 struct Liftoff {
   duration: StdDuration,
   input: String,
@@ -17,24 +18,19 @@ struct Liftoff {
   human_readable : bool,
   running: bool,
   negative: bool,
+  n_items: usize,
+  list: Vec<String>,
 }
 
+// App creation method
 impl Liftoff{
   fn new(cc: &eframe::CreationContext<'_>) -> Self {
     ui::setup_font(&cc.egui_ctx);
-    Self {
-      duration: StdDuration::new(5, 0),
-      input: String::from("5s"),
-      start_time: SystemTime::now(),
-      end_time: SystemTime::now(),
-      millis: false,
-      human_readable: false,
-      running: false,
-      negative: false,
-    }
+    Liftoff::default()
   }
 }
 
+// default state of the app
 impl Default for Liftoff {
   fn default() -> Self {
     Self {
@@ -46,17 +42,20 @@ impl Default for Liftoff {
       human_readable: false,
       running: false,
       negative: false,
+      n_items: 0,
+      list: Vec::new(),
     }
   }
 }
 
+// App functions
 impl eframe::App for Liftoff {
   fn clear_color(&self, _visuals: &egui::Visuals) -> [f32; 4] {
         egui::Rgba::TRANSPARENT.to_array() // Make sure we don't paint anything behind the rounded corners
   }
 
-
   fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
+    // window frame
     ui::window_frame(ctx, frame, "Liftoff", |ui| {
       let rem_time: StdDuration;
       if self.running {
@@ -71,33 +70,65 @@ impl eframe::App for Liftoff {
       } else {
         rem_time = self.duration;
       }
+      // Heading
+      let liftoff_text: String;
       if self.human_readable {
+        liftoff_text = logic::time_string_human(rem_time, None);
         ui.vertical_centered(|ui|{
-          ui.heading(logic::time_string_human(rem_time, None));
+          ui.heading(liftoff_text.clone());
         });
-
       } else {
+        liftoff_text = logic::time_string(rem_time, Some(self.negative), self.millis);
         ui.vertical_centered(|ui|{
-          ui.heading(logic::time_string(rem_time, Some(self.negative), self.millis));
+          ui.heading(liftoff_text.clone());
         });
       }
-      ui.text_edit_singleline(&mut self.input).on_hover_text("Enter a duration e.g. 1h30m20s");
 
-      ui.horizontal_centered(|ui| {
-        ui.checkbox(&mut self.millis, "ms");
-        ui.checkbox(&mut self.human_readable, "human readable");
+      ui.horizontal(|ui| {
+        ui.add_space(4.0);
+        ui.group(|ui| {
+          ui.vertical(|ui| {
+            // Edit field
+            ui.text_edit_singleline(&mut self.input).on_hover_text("Enter a duration e.g. 1h30m20s");
+            // Checkboxes
+            ui.horizontal(|ui| {
+              ui.checkbox(&mut self.millis, "ms");
+              ui.add_space(4.0);
+              ui.checkbox(&mut self.human_readable, "human readable");
+            });
+          });
+        });
       });
+
+      // List view
+      ui.horizontal(|ui| {
+        ui.vertical_centered(|ui| {
+          eframe::egui::ScrollArea::vertical().show(
+            ui,
+            |ui| {
+              for item in self.list.iter().rev() {
+                ui.label(item);
+              }
+            },
+          );
+      });
+    });
 
       // Actions on keybuttons
       if ui.input(|i| i.key_pressed(egui::Key::Enter)) {
         if !self.running {
           self.duration =  parse_duration(self.input.trim()).unwrap_or(StdDuration::new(5, 0));
+        } else {
+          self.list.push(liftoff_text.clone());
+          self.n_items += 1;
         }
       }
       if ui.input(|i| i.key_pressed(egui::Key::Space)) {
         if self.running {
           self.running = false;
           self.duration = rem_time;
+          self.list.push(liftoff_text.clone());
+          self.n_items += 1;
         } else {
           self.running = true;
           if !self.negative {
@@ -107,10 +138,9 @@ impl eframe::App for Liftoff {
           self.end_time = self.start_time + self.duration;
         }
       }
-    if self.running {
-      ctx.request_repaint();
-    }
-
+      if self.running {
+        ctx.request_repaint();
+      }
     });
   }
 }
@@ -124,8 +154,8 @@ fn main() {
     decorated: false,
     transparent: true,
     icon_data: Some(ui::load_icon()),
-    min_window_size: Some(egui::vec2(300.0, 150.0)),
-    initial_window_size: Some(egui::vec2(300.0, 150.0)),
+    min_window_size: Some(egui::vec2(300.0, 200.0)),
+    initial_window_size: Some(egui::vec2(300.0, 200.0)),
     ..Default::default()
   };
 
@@ -135,5 +165,4 @@ fn main() {
     //Box::new(|cc| Box::new(Liftoff::default(cc))),
     Box::new(|cc| Box::new(Liftoff::new(cc))),
   ).unwrap();
-
 }
