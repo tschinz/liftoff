@@ -54,6 +54,7 @@ impl eframe::App for Liftoff {
         egui::Rgba::TRANSPARENT.to_array() // Make sure we don't paint anything behind the rounded corners
   }
 
+
   fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
     // window frame
     ui::window_frame(ctx, frame, "Liftoff", |ui| {
@@ -84,24 +85,22 @@ impl eframe::App for Liftoff {
         });
       }
 
-      ui.horizontal(|ui| {
-        ui.add_space(4.0);
-        ui.group(|ui| {
-          ui.vertical(|ui| {
-            // Edit field
-            ui.text_edit_singleline(&mut self.input).on_hover_text("Enter a duration e.g. 1h30m20s");
-            // Checkboxes
-            ui.horizontal(|ui| {
-              ui.checkbox(&mut self.millis, "ms");
-              ui.add_space(4.0);
-              ui.checkbox(&mut self.human_readable, "human readable");
-            });
-          });
+      ui.group(|ui| {
+        ui.vertical_centered(|ui| {
+          // Edit field
+          ui.text_edit_singleline(&mut self.input).on_hover_text("Enter a duration e.g. 1h30m20s");
+        });
+        // Checkboxes
+        ui.horizontal(|ui|{
+          ui.add_space(ui.available_width() / 2.0-70.0);
+          ui.checkbox(&mut self.millis, "ms");
+          ui.add_space(4.0);
+          ui.checkbox(&mut self.human_readable, "human readable");
+          ui.add_space(ui.available_width() / 2.0);
         });
       });
 
       // List view
-      ui.horizontal(|ui| {
         ui.vertical_centered(|ui| {
           eframe::egui::ScrollArea::vertical().show(
             ui,
@@ -111,7 +110,6 @@ impl eframe::App for Liftoff {
               }
             },
           );
-      });
     });
 
       // Actions on keybuttons
@@ -145,8 +143,8 @@ impl eframe::App for Liftoff {
   }
 }
 
-
-fn main() {
+#[cfg(not(target_arch = "wasm32"))]
+fn main()  -> eframe::Result<()> {
   // Log to stdout (if you run with `RUST_LOG=debug`).
   //tracing_subscriber::fmt::init();
 
@@ -164,5 +162,24 @@ fn main() {
     options,
     //Box::new(|cc| Box::new(Liftoff::default(cc))),
     Box::new(|cc| Box::new(Liftoff::new(cc))),
-  ).unwrap();
+  )
+}
+
+#[cfg(target_arch = "wasm32")]
+fn main() {
+    // Redirect `log` message to `console.log` and friends:
+    //eframe::WebLogger::init(log::LevelFilter::Debug).ok();
+
+    let web_options = eframe::WebOptions::default();
+
+    wasm_bindgen_futures::spawn_local(async {
+        eframe::WebRunner::new()
+            .start(
+                "the_canvas_id", // hardcode it
+                web_options,
+                Box::new(|cc| Box::new(Liftoff::new(cc))),
+            )
+            .await
+            .expect("failed to start eframe");
+    });
 }

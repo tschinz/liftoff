@@ -8,6 +8,8 @@
 
 <h4 style="text-align:center" align="center">A simple terminal countdown timer app created in rust.</h4>
 
+![liftoff egui](img/liftoff-egui.png)
+
 # Table of contents
 <p align="center">
   <a href="#description">Description</a> •

@@ -38,8 +38,17 @@ info: ## Information about the environment
 	@echo "  * Rust Enviroment: "
 	@echo "$(RUST_ENV)"
 
+install-wasm: ## install wasm tool trunk
+	@cargo install --locked trunk
+	@rustup target add wasm32-unknown-unknown
 run: ## build and run the debug application
 	@cargo run
+
+run-wasm: ## build an run the wasm locally
+	@trunk serve
+
+build-wasm: ## build wasm version
+	@trunk build --release
 
 build-debug: ## build debug version
 	@cargo build
