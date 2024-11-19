@@ -1,0 +1,6 @@
+[workspace]
+members = [
+    "liftoff-terminal",
+    "liftoff-egui",
+    "liftoff-ratatui"
+]

@@ -3,6 +3,7 @@ name = "liftoff-egui"
 version = "0.1.0"
 edition = "2021"
 
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
@@ -11,3 +12,22 @@ chrono-humanize = "0.2.2"
 eframe = "0.22.0"
 humantime = "2.1.0"
 image = "0.24.2"
+
+# for cargo bundle
+[package.metadata.bundle]
+name = "Liftoff"
+identifier = "io.github.tschinz.liftoff"
+icon = [
+  "assets/icon-32.png",
+  "assets/icon-128.png",
+  "assets/icon-256.png",
+  "assets/icon-512.png",
+]
+copyright = "Copyright (c) tschinz 2024. All rights reserved."
+version = "1.0.0"
+resources = ["asset/**/*.png"]
+category = "public.app-category.utilities"
+short_description = "T- and T+ Timer"
+long_description = """
+A Timer program allowing to count down and count up after reaching T0 similar to a Rockt filtoff counter
+"""

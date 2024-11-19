@@ -1,0 +1,58 @@
+##################################################
+# Variables
+#
+rust_env := "rustup show"
+rust_edition := "2021"
+open := if os() == "linux" {
+  "xdg-open"
+} else if os() == "macos" {
+  "open"
+} else {
+  "start \"\" /max"
+}
+args := ""
+repo_name := "liftoff-egui"
+app_name := "Liftoff"
+project_directory := justfile_directory()
+
+##################################################
+# COMMANDS
+#
+
+# List all commands
+@default:
+  just --list
+
+# Information about the environment
+@info:
+  echo "Environment Informations\n------------------------\n"
+  echo "OS   : {{os()}}({{arch()}})"
+  echo "Open : {{open}}"
+  echo "Rust :"
+  echo "`{{rust_env}}`"
+
+# Install dependencies
+@install:
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+  cargo install --locked trunk
+  cargo install cargo-bundle
+
+# Run the program in debug mode
+run args=args:
+  cargo run -- {{args}}
+
+# Create a OS-specific binary
+[macos]
+bundle:
+  cargo bundle --release
+  cp -r target/release/bundle/osx/{{app_name}}.app /Applications/
+  mkdir -p ../bin && cp -r target/release/bundle/osx/{{app_name}}.app ../bin/
+
+# Build and copy the release version of the program
+@build:
+  cargo build --release
+  mkdir -p ../bin && cp target/release/{{repo_name}} ../bin/
+
+# Run rustfmt with custom configuration
+rustfmt:
+  find {{invocation_directory()}} -name \*.rs -exec rustfmt --config tab_spaces=2 --edition {{rust_edition}} {} \;

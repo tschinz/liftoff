@@ -47,7 +47,6 @@ impl Default for Liftoff {
     }
   }
 }
-
 // App functions
 impl eframe::App for Liftoff {
   fn clear_color(&self, _visuals: &egui::Visuals) -> [f32; 4] {
