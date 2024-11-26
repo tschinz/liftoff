@@ -59,4 +59,4 @@ Copyright :copyright: All rights reserved
 ---
 
 ## Find me on
-> Website [ZNotes](https://tschinz.github.io/znotes/) &nbsp;&middot;&nbsp;
+> Website [ZNotes](https://tschinz.github.io/) &nbsp;&middot;&nbsp;
